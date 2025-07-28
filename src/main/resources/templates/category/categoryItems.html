@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${items.get(0).subcategory.category.name} + ' - BaranoffShop'"></title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="/">BaranoffShop</a>
+        </div>
+
+        <div class="search-container">
+            <form action="/search" method="GET">
+                <input type="text" class="search-input" placeholder="Поиск товаров..." name="query">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" class="nav-link"><i class="fas fa-home"></i> Главная</a>
+            <a href="/cart" class="nav-link"><i class="fas fa-shopping-cart"></i> Корзина</a>
+            <a href="/profile" class="nav-link"><i class="fas fa-user"></i> Профиль</a>
+        </div>
+    </div>
+
+    <div class="category-nav">
+        <div class="category-dropdown">
+            <button class="category-btn">Категории <i class="fas fa-chevron-down"></i></button>
+            <div class="dropdown-content">
+                <a href="/" class="category-link">Все товары</a>
+
+                <div th:each="category : ${categories}">
+                    <a th:href="@{/category/{id}(id=${category.id})}" class="category-link" th:text="${category.name}"></a>
+                    <div class="subcategories">
+                        <div th:each="subcategory : ${category.subcategories}">
+                            <a th:href="@{/category/{category_id}/subcategory/{id}(category_id=${category.id},id=${subcategory.id})}" class="subcategory-link" th:text="${subcategory.name}"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="main-content">
+    <h1 class="category-title">Ноутбуки</h1>
+    <p class="category-description">Широкий выбор ноутбуков различных брендов и конфигураций</p>
+
+    <div class="subcategory-filter">
+        <a th:href="@{/category/{id}(id=${items.get(0).subcategory.category.id})}" class="subcategory-filter-link active">Все</a>
+        <div th:each="subcategory : ${items.get(0).subcategory.category.subcategories}">
+            <a th:href="@{/category/{category_id}/subcategory/{id}(category_id=${items.get(0).subcategory.category.id},id=${subcategory.id})}" class="subcategory-filter-link" th:text="${subcategory.name}"></a>
+        </div>
+    </div>
+
+    <div class="products-grid">
+        <div th:each="item : ${items}">
+            <div class="product-card">
+                <a th:href="@{/product/{id}(id=${item.id})}">
+                    <div class="product-image-container">
+                        <img th:src="${item.imageUrl}" th:alt="${item.name}" class="product-image">
+                        <div class="product-badge">Хит продаж</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title" th:text="${item.name}"></h3>
+                        <p class="product-brand" th:text="'Бренд: ' + ${item.brand}"></p>
+                        <p class="product-description" th:text="${item.description}"></p>
+                        <div class="product-price-container">
+                            <span class="product-price" th:text="'$' + ${item.price}"></span>
+                        </div>
+                        <div class="product-stock" th:text="'В наличии: ' + ${item.stockQuantity} + ' шт.'"></div>
+                    </div>
+                </a>
+                <form action="/cart/add" method="POST" class="add-to-cart-form">
+                    <input type="hidden" name="product_id" value="1">
+                    <button type="submit" class="add-to-cart-btn">В корзину</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-content">
+        <p>&copy; 2025 BaranoffShop. Все права защищены.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+</footer>
+</body>
+</html>
