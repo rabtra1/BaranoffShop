@@ -39,7 +39,7 @@
                         <a th:href="@{/category/{id}(id=${category.id})}" class="category-link" th:text="${category.name}"></a>
                         <div class="subcategories">
                             <div th:each="subcategory : ${category.subcategories}">
-                                <a th:href="@{/category/{category_id}/subcategory/{id}(category_id=${category.id},id=${subcategory.id})}" class="subcategory-link" th:text="${subcategory.name}"></a>
+                                <a th:href="@{/subcategory/{id}(id=${subcategory.id})}" class="subcategory-link" th:text="${subcategory.name}"></a>
                             </div>
                         </div>
                     </div>

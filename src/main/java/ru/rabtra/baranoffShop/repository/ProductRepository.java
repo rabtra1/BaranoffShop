@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.rabtra.baranoffShop.model.Product;
+import ru.rabtra.baranoffShop.model.Subcategory;
 
 import java.util.List;
 
@@ -16,5 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
         WHERE p.subcategory.category.id = :categoryId
     """)
     List<Product> findByCategoryId(Long categoryId);
+
+    List<Product> findBySubcategoryId(Long id);
 
 }

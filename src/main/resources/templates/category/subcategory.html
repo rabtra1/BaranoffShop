@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${items.get(0).subcategory.category.name} + ' - BaranoffShop'"></title>
+    <title th:text="${items.get(0).subcategory.category.name} + ' ' + ${items.get(0).subcategory.name} + ' - BaranoffShop'"></title>
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
@@ -35,7 +35,6 @@
             <button class="category-btn">Категории <i class="fas fa-chevron-down"></i></button>
             <div class="dropdown-content">
                 <a href="/" class="category-link">Все товары</a>
-
                 <div th:each="category : ${categories}">
                     <a th:href="@{/category/{id}(id=${category.id})}" class="category-link" th:text="${category.name}"></a>
                     <div class="subcategories">
@@ -50,14 +49,16 @@
 </nav>
 
 <main class="main-content">
-    <h1 class="category-title" th:text="${items.get(0).subcategory.category.name}"></h1>
-    <p class="category-description">Широкий выбор ноутбуков различных брендов и конфигураций</p>
+    <div class="breadcrumbs">
+        <a href="/">Главная</a>
+        <span>/</span>
+        <a th:href="@{/category/{id}(id=${items.get(0).subcategory.category.id})}" th:text="${items.get(0).subcategory.category.name}"></a>
+        <span>/</span>
+        <a th:href="@{/subcategory/{id}(id=${items.get(0).subcategory.id})}" th:text="${items.get(0).subcategory.name}"></a>
+    </div>
 
-    <div class="subcategory-filter">
-        <a th:href="@{/category/{id}(id=${items.get(0).subcategory.category.id})}" class="subcategory-filter-link active">Все</a>
-        <div th:each="subcategory : ${items.get(0).subcategory.category.subcategories}">
-            <a th:href="@{/subcategory/{id}(id=${subcategory.id})}" class="subcategory-filter-link" th:text="${subcategory.name}"></a>
-        </div>
+    <div class="subcategory-header">
+        <h1 class="subcategory-title" th:text="${items.get(0).subcategory.category.name} + ' ' + ${items.get(0).subcategory.name}"></h1>
     </div>
 
     <div class="products-grid">
@@ -73,13 +74,13 @@
                         <p class="product-brand" th:text="'Бренд: ' + ${item.brand}"></p>
                         <p class="product-description" th:text="${item.description}"></p>
                         <div class="product-price-container">
-                            <span class="product-price" th:text="'$' + ${item.price}"></span>
+                            <span class="product-price" th:text="'$'+ ${item.price}"></span>
                         </div>
                         <div class="product-stock" th:text="'В наличии: ' + ${item.stockQuantity} + ' шт.'"></div>
                     </div>
                 </a>
                 <form action="/cart/add" method="POST" class="add-to-cart-form">
-                    <input type="hidden" name="product_id" value="1">
+                    <input type="hidden" name="product_id" value="101">
                     <button type="submit" class="add-to-cart-btn">В корзину</button>
                 </form>
             </div>
