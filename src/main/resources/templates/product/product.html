@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MacBook Pro 16" - BaranoffShop</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/product.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="/">BaranoffShop</a>
+        </div>
+
+        <div class="search-container">
+            <form action="/search" method="GET">
+                <input type="text" class="search-input" placeholder="Поиск товаров..." name="query">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" class="nav-link"><i class="fas fa-home"></i> Главная</a>
+            <a href="/cart" class="nav-link"><i class="fas fa-shopping-cart"></i> Корзина</a>
+            <a href="/profile" class="nav-link"><i class="fas fa-user"></i> Профиль</a>
+        </div>
+    </div>
+</nav>
+
+<main class="product-main-content">
+    <div class="breadcrumbs">
+        <a href="/">Главная</a>
+        <span>/</span>
+        <a th:href="@{/category/{id}(id=${item.subcategory.category.id})}" th:text="${item.subcategory.category.name}"></a>
+        <span>/</span>
+        <a th:href="@{/subcategory/{id}(id=${item.subcategory.id})}" th:text="${item.subcategory.name}"></a>
+    </div>
+
+    <!-- Основная информация о товаре -->
+    <div class="product-detail-container">
+        <div class="product-gallery">
+            <div class="main-image">
+                <img th:src="${item.imageUrl}" th:alt="${item.name}">
+            </div>
+<!--            <div class="thumbnails">-->
+<!--                <img th:src="${item.imageUrl}" alt="Вид 1">-->
+<!--            </div>-->
+        </div>
+
+        <div class="product-info">
+            <h1 class="product-title" th:text="${item.name}"></h1>
+
+            <div class="price-container">
+                <span class="current-price" th:text="${item.price}"></span>
+            </div>
+
+            <div class="availability">
+                <i class="fas fa-check-circle"></i>
+                <span th:text="'В наличии: ' + ${item.stockQuantity} + ' шт.'"></span>
+            </div>
+
+            <div class="product-actions">
+                <div class="quantity-selector">
+                    <button id="minus" class="quantity-btn minus">-</button>
+                    <input id="input" value="1" min="1" th:max="${item.stockQuantity}">
+                    <button id="plus" class="quantity-btn plus">+</button>
+                </div>
+                <button class="btn-add-to-cart">
+                    <i class="fas fa-shopping-cart"></i> В корзину
+                </button>
+                <button class="btn-buy-now">
+                    <i class="fas fa-bolt"></i> Купить сейчас
+                </button>
+            </div>
+
+            <div class="delivery-info">
+                <h3>Доставка и оплата</h3>
+                <ul>
+                    <li><i class="fas fa-truck"></i> Бесплатная доставка по РФ</li>
+                    <li><i class="fas fa-credit-card"></i> Оплата при получении или онлайн</li>
+                    <li><i class="fas fa-shield-alt"></i> Гарантия 2 года</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="product-tabs">
+        <div class="tabs-header">
+            <button class="tab-btn active" data-tab="description">Описание</button>
+        </div>
+
+        <div class="tabs-content">
+            <div class="tab-pane active" id="description">
+                <h3 th:text="${item.name}"></h3>
+                <p th:text="${item.description}"></p>
+            </div>
+        </div>
+    </div>
+
+    <section class="related-products">
+        <h2>Похожие товары</h2>
+        <div class="products-grid">
+            <div th:each="sameProd : ${sameProducts}">
+                <div class="product-card">
+                    <a th:href="@{/product/{id}(id=${sameProd.id})}">
+                        <div class="product-image-container">
+                            <img th:src="${sameProd.imageUrl}" th:alt="${sameProd.name}" class="product-image">
+                        </div>
+                        <div class="product-info">
+                            <h3 class="product-title" th:text="${sameProd.name}"></h3>
+                            <p class="product-brand" th:text="'Бренд: ' + ${sameProd.subcategory.name}"></p>
+                            <div class="product-price-container">
+                                <span class="product-price" th:text="'$' + ${sameProd.price}"></span>
+                            </div>
+                            <div class="product-stock" th:text="'В наличии: ' + ${sameProd.stockQuantity} + ' шт.'"></div>
+                        </div>
+                    </a>
+                    <button class="add-to-cart-btn">В корзину</button>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer class="footer">
+    <div class="footer-content">
+        <p>&copy; 2025 BaranoffShop. Все права защищены.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+</footer>
+<script type="application/javascript" th:src="@{/js/product.js}"></script>
+</body>
+</html>

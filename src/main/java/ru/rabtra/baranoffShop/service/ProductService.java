@@ -7,6 +7,7 @@ import ru.rabtra.baranoffShop.model.Product;
 import ru.rabtra.baranoffShop.repository.ProductRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional(readOnly = true)
@@ -23,12 +24,20 @@ public class ProductService {
         return productRepository.findAll();
     }
 
+    public Optional<Product> findById(Long id) {
+        return productRepository.findById(id);
+    }
+
     public List<Product> findByCategoryId(Long categoryId) {
         return productRepository.findByCategoryId(categoryId);
     }
 
     public List<Product> findBySubcategoryId(Long subcategoryId) {
         return productRepository.findBySubcategoryId(subcategoryId);
+    }
+
+    public List<Product> findBySubcategoryIdWithoutCurrent(Long subcategoryId, Long itemId) {
+        return productRepository.findBySubcategoryIdWithoutCurrent(subcategoryId, itemId);
     }
 
 }

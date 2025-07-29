@@ -4,7 +4,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import ru.rabtra.baranoffShop.model.Product;
-import ru.rabtra.baranoffShop.model.Subcategory;
 
 import java.util.List;
 
@@ -19,5 +18,13 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryId(Long categoryId);
 
     List<Product> findBySubcategoryId(Long id);
+
+    @Query(
+            """
+            SELECT p
+            FROM Product p
+            WHERE p.subcategory.id = :subcategoryId and p.id != :itemId
+    """)
+    List<Product> findBySubcategoryIdWithoutCurrent(Long subcategoryId, Long itemId);
 
 }
