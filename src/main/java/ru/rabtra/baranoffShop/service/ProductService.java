@@ -40,4 +40,8 @@ public class ProductService {
         return productRepository.findBySubcategoryIdWithoutCurrent(subcategoryId, itemId);
     }
 
+    public List<Product> search(String query) {
+        return productRepository.searchProduct(query);
+    }
+
 }

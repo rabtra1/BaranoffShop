@@ -2,6 +2,7 @@ package ru.rabtra.baranoffShop.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.rabtra.baranoffShop.model.Product;
 
@@ -27,4 +28,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     """)
     List<Product> findBySubcategoryIdWithoutCurrent(Long subcategoryId, Long itemId);
 
+    @Query("SELECT p FROM Product p " +
+            "WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "   OR LOWER(p.description) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "ORDER BY " +
+            "  CASE WHEN LOWER(p.name) LIKE LOWER(CONCAT('%', :query, '%')) THEN 1 ELSE 2 END, " +
+            "  p.name")
+    List<Product> searchProduct(@Param("query") String query);
 }
