@@ -75,11 +75,28 @@
                     </form>
                 </div>
             </div>
-
-
-
         </div>
     </main>
+
+    <div class="pagination-container">
+        <a th:if="${page > 0}" th:href="@{/(page=${page - 1})}" class="pagination-button previous-page">
+            <span>&larr;</span>
+            Previous page
+        </a>
+        <a th:if="${page <= 0}" href="#" class="pagination-button previous-page disabled">
+            <span>&larr;</span>
+            Previous page
+        </a>
+
+        <a th:if="${page < allPages}" th:href="@{/(page=${page + 1})}" class="pagination-button next-page">
+            Next page
+            <span>&rarr;</span>
+        </a>
+        <a th:if="${page == allPages}" href="#" class="pagination-button next-page disabled">
+            Next page
+            <span>&rarr;</span>
+        </a>
+    </div>
 
     <footer class="footer">
         <div class="footer-content">

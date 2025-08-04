@@ -441,3 +441,60 @@ body {
 .breadcrumbs span {
     margin: 0 5px;
 }
+
+.pagination-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.pagination-button {
+    background-color: #333;
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    font-size: 16px;
+    text-decoration: none;
+    width: 48%;
+    text-align: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+}
+
+/* Previous — выравнивание по левому краю */
+.pagination-button.previous-page {
+    justify-content: flex-start;
+}
+
+/* Next — выравнивание по правому краю */
+.pagination-button.next-page {
+    justify-content: flex-end;
+}
+
+/* Стрелки */
+.pagination-button span {
+    margin: 0 8px;
+}
+
+/* Hover */
+.pagination-button:hover:not(.disabled) {
+    background-color: #555;
+}
+
+/* Неактивная кнопка */
+.pagination-button.disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+/* Убрать подчёркивание у ссылок */
+.pagination-button.disabled {
+    pointer-events: none;
+    text-decoration: none;
+}
