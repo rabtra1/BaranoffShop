@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль - BaranoffShop</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">
+            <a href="#">BaranoffShop</a>
+        </div>
+
+        <div class="search-container">
+            <form action="/search" method="GET">
+                <input type="text" class="search-input" placeholder="Поиск товаров..." name="query">
+                <button type="submit" class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" class="nav-link"><i class="fas fa-home"></i> Главная</a>
+            <a href="/cart" class="nav-link"><i class="fas fa-shopping-cart"></i> Корзина</a>
+            <a href="/profile" class="nav-link active"><i class="fas fa-user"></i> Профиль</a>
+        </div>
+    </div>
+
+    <div class="category-nav">
+        <div class="category-dropdown">
+            <button class="category-btn">Категории <i class="fas fa-chevron-down"></i></button>
+            <div class="dropdown-content">
+                <a href="/" class="category-link">Все товары</a>
+                <!-- Thymeleaf categories will be inserted here -->
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main class="main-content profile-content">
+    <div class="profile-header">
+        <h1 class="profile-title">Мой профиль</h1>
+        <div class="breadcrumbs">
+            <a href="/">Главная</a>
+            <span>/</span>
+            <span>Профиль</span>
+        </div>
+    </div>
+
+    <div class="profile-container">
+        <div class="profile-sidebar">
+            <div class="avatar-container">
+                <img src="/images/default-avatar.jpg" alt="Аватар" class="profile-avatar" id="avatarImage">
+                <form action="/profile/avatar" method="POST" enctype="multipart/form-data" class="avatar-form">
+                    <input type="file" name="avatar" id="avatarInput" accept="image/*" style="display: none;">
+                    <button type="button" class="change-avatar-btn" onclick="document.getElementById('avatarInput').click()">
+                        <i class="fas fa-camera"></i> Изменить
+                    </button>
+                    <button type="submit" class="save-avatar-btn" style="display: none;">
+                        <i class="fas fa-save"></i> Сохранить
+                    </button>
+                </form>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Заказов: <span class="orders-count">0</span></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-heart"></i>
+                    <span>Избранное: <span class="favorites-count">0</span></span>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-star"></i>
+                    <span>Бонусы: <span class="bonus-points">0</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-main">
+            <div class="profile-section">
+                <h2 class="section-title">Основная информация</h2>
+                <form action="/profile/update-name" method="POST" class="profile-form">
+                    <div class="form-group">
+                        <label for="firstName">Имя</label>
+                        <input type="text" id="firstName" name="firstName" class="form-input" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Фамилия</label>
+                        <input type="text" id="lastName" name="lastName" class="form-input" disabled>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="edit-btn" onclick="enableEditing(this)">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </button>
+                        <button type="submit" class="save-btn" style="display: none;">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                        <button type="button" class="cancel-btn" onclick="cancelEditing(this)" style="display: none;">
+                            <i class="fas fa-times"></i> Отмена
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title">Контактная информация</h2>
+                <form action="/profile/update-email" method="POST" class="profile-form">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <div class="input-with-status">
+                            <input type="email" id="email" name="email" class="form-input" placeholder="Введите email" disabled>
+                            <span class="verified-status" style="display: none;">
+                                    <i class="fas fa-check-circle"></i> Подтвержден
+                                </span>
+                            <span class="unverified-status" style="display: none;">
+                                    <i class="fas fa-exclamation-circle"></i> Не подтвержден
+                                </span>
+                        </div>
+                        <div class="verification-actions" style="display: none;">
+                            <button type="button" class="verify-btn" onclick="sendVerificationEmail()">
+                                <i class="fas fa-envelope"></i> Отправить подтверждение
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="edit-btn" onclick="enableEditing(this)">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </button>
+                        <button type="submit" class="save-btn" style="display: none;">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                        <button type="button" class="cancel-btn" onclick="cancelEditing(this)" style="display: none;">
+                            <i class="fas fa-times"></i> Отмена
+                        </button>
+                    </div>
+                </form>
+
+                <form action="/profile/update-phone" method="POST" class="profile-form">
+                    <div class="form-group">
+                        <label for="phoneNumber">Телефон</label>
+                        <input type="tel" id="phoneNumber" name="phoneNumber" class="form-input" placeholder="Введите телефон" disabled>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="edit-btn" onclick="enableEditing(this)">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </button>
+                        <button type="submit" class="save-btn" style="display: none;">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                        <button type="button" class="cancel-btn" onclick="cancelEditing(this)" style="display: none;">
+                            <i class="fas fa-times"></i> Отмена
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title">Адрес доставки</h2>
+                <form action="/profile/update-address" method="POST" class="profile-form">
+                    <div class="form-group">
+                        <label for="address">Адрес</label>
+                        <textarea id="address" name="address" class="form-input" placeholder="Введите ваш адрес" disabled></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="edit-btn" onclick="enableEditing(this)">
+                            <i class="fas fa-edit"></i> Редактировать
+                        </button>
+                        <button type="submit" class="save-btn" style="display: none;">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                        <button type="button" class="cancel-btn" onclick="cancelEditing(this)" style="display: none;">
+                            <i class="fas fa-times"></i> Отмена
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="profile-section">
+                <h2 class="section-title">Безопасность</h2>
+                <form action="/profile/change-password" method="POST" class="profile-form">
+                    <div class="form-group">
+                        <label for="currentPassword">Текущий пароль</label>
+                        <input type="password" id="currentPassword" name="currentPassword" class="form-input" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Новый пароль</label>
+                        <input type="password" id="newPassword" name="newPassword" class="form-input" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmPassword">Подтвердите пароль</label>
+                        <input type="password" id="confirmPassword" name="confirmPassword" class="form-input" disabled>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="edit-btn" onclick="enableEditing(this)">
+                            <i class="fas fa-edit"></i> Изменить пароль
+                        </button>
+                        <button type="submit" class="save-btn" style="display: none;">
+                            <i class="fas fa-save"></i> Сохранить
+                        </button>
+                        <button type="button" class="cancel-btn" onclick="cancelEditing(this)" style="display: none;">
+                            <i class="fas fa-times"></i> Отмена
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+
+<footer class="footer">
+    <div class="footer-content">
+        <p>&copy; 2025 BaranoffShop. Все права защищены.</p>
+        <div class="social-links">
+            <a href="#"><i class="fab fa-facebook"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    // Включение редактирования поля
+    function enableEditing(button) {
+        const form = button.closest('.profile-form');
+        const inputs = form.querySelectorAll('.form-input');
+        const editBtn = form.querySelector('.edit-btn');
+        const saveBtn = form.querySelector('.save-btn');
+        const cancelBtn = form.querySelector('.cancel-btn');
+
+        inputs.forEach(input => input.disabled = false);
+        editBtn.style.display = 'none';
+        saveBtn.style.display = 'inline-block';
+        cancelBtn.style.display = 'inline-block';
+    }
+
+    // Отмена редактирования
+    function cancelEditing(button) {
+        const form = button.closest('.profile-form');
+        const inputs = form.querySelectorAll('.form-input');
+        const editBtn = form.querySelector('.edit-btn');
+        const saveBtn = form.querySelector('.save-btn');
+        const cancelBtn = form.querySelector('.cancel-btn');
+
+        inputs.forEach(input => {
+            input.disabled = true;
+            if (input.type !== 'password') {
+                input.value = input.defaultValue;
+            } else {
+                input.value = '';
+            }
+        });
+
+        editBtn.style.display = 'inline-block';
+        saveBtn.style.display = 'none';
+        cancelBtn.style.display = 'none';
+    }
+
+    // Отправка письма для подтверждения email
+    function sendVerificationEmail() {
+        fetch('/profile/send-verification', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('Письмо с подтверждением отправлено на ваш email!');
+                } else {
+                    alert('Ошибка при отправке письма. Попробуйте позже.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Произошла ошибка. Попробуйте позже.');
+            });
+    }
+
+    // Обработка изменения аватара
+    document.getElementById('avatarInput').addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatarImage').src = e.target.result;
+                document.querySelector('.save-avatar-btn').style.display = 'inline-block';
+            }
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+</body>
+</html>
