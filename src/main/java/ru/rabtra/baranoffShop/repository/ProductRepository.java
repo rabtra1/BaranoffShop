@@ -39,4 +39,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "  CASE WHEN LOWER(p.name) LIKE LOWER(CONCAT('%', :query, '%')) THEN 1 ELSE 2 END, " +
             "  p.name")
     List<Product> searchProduct(@Param("query") String query);
+
+    @Query("SELECT p FROM Product p " +
+            "WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "   OR LOWER(p.description) LIKE LOWER(CONCAT('%', :query, '%')) " +
+            "ORDER BY " +
+            "  CASE WHEN LOWER(p.name) LIKE LOWER(CONCAT('%', :query, '%')) THEN 1 ELSE 2 END, " +
+            "  p.name")
+    Page<Product> searchProduct(Pageable pageable, @Param("query") String query);
 }

@@ -31,6 +31,10 @@ public class ProductService {
         return productRepository.findAll(pageable);
     }
 
+    public Page<Product> search(Pageable pageable, String query) {
+        return productRepository.searchProduct(pageable, query);
+    }
+
     public Optional<Product> findById(Long id) {
         return productRepository.findById(id);
     }

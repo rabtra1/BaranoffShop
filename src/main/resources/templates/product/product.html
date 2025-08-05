@@ -56,7 +56,7 @@
             <h1 class="product-title" th:text="${item.name}"></h1>
 
             <div class="price-container">
-                <span class="current-price" th:text="${item.price}"></span>
+                <span class="current-price" th:text="'$'+${item.price}"></span>
             </div>
 
             <div class="availability">

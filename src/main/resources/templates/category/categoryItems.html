@@ -51,7 +51,7 @@
 
 <main class="main-content">
     <h1 class="category-title" th:text="${items.get(0).subcategory.category.name}"></h1>
-    <p class="category-description">Широкий выбор ноутбуков различных брендов и конфигураций</p>
+<!--    <p class="category-description">Широкий выбор ноутбуков различных брендов и конфигураций</p>-->
 
     <div class="subcategory-filter">
         <a th:href="@{/category/{id}(id=${items.get(0).subcategory.category.id})}" class="subcategory-filter-link active">Все</a>
@@ -66,7 +66,7 @@
                 <a th:href="@{/product/{id}(id=${item.id})}">
                     <div class="product-image-container">
                         <img th:src="${item.imageUrl}" th:alt="${item.name}" class="product-image">
-                        <div class="product-badge">Хит продаж</div>
+<!--                        <div class="product-badge">Хит продаж</div>-->
                     </div>
                     <div class="product-info">
                         <h3 class="product-title" th:text="${item.name}"></h3>

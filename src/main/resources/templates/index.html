@@ -56,7 +56,7 @@
                     <a th:href="@{/product/{id}(id=${product.id})}">
                         <div class="product-image-container">
                             <img th:src="${product.imageUrl}" th:alt="${product.name}" class="product-image">
-                            <div class="product-badge">Новинка</div>
+<!--                            <div class="product-badge">Новинка</div>-->
                         </div>
                         <div class="product-info">
                             <h3 class="product-title" th:text="${product.name}"></h3>
@@ -64,7 +64,6 @@
                             <p class="product-description" th:text="${product.description}"></p>
                             <div class="product-price-container">
                                 <span class="product-price" th:text="${'$'+product.price}"></span>
-<!--                                <span class="product-old-price" th:text="${'$'+product.price}"></span>-->
                             </div>
                             <div class="product-stock" th:text="${'В наличии: '+product.stockQuantity + ' шт.'}"></div>
                         </div>

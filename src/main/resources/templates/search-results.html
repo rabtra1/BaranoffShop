@@ -7,89 +7,106 @@
   <title>Home page</title>
 </head>
 <body>
-<nav class="navbar">
-  <div class="nav-container">
-    <div class="logo">
-      <a href="/">BaranoffShop</a>
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <a href="/">BaranoffShop</a>
+      </div>
+
+      <div class="search-container">
+        <form action="/search" method="GET">
+          <input type="text" class="search-input" placeholder="Поиск товаров..." name="query">
+          <button type="submit" class="search-button">
+            <i class="fas fa-search"></i>
+          </button>
+        </form>
+      </div>
+
+      <div class="nav-links">
+        <a href="/" class="nav-link"><i class="fas fa-home"></i> Главная</a>
+        <a href="/cart" class="nav-link"><i class="fas fa-shopping-cart"></i> Корзина</a>
+        <a href="/profile" class="nav-link"><i class="fas fa-user"></i> Профиль</a>
+      </div>
     </div>
 
-    <div class="search-container">
-      <form action="/search" method="GET">
-        <input type="text" class="search-input" placeholder="Поиск товаров..." name="query">
-        <button type="submit" class="search-button">
-          <i class="fas fa-search"></i>
-        </button>
-      </form>
-    </div>
+    <div class="category-nav">
+      <div class="category-dropdown">
+        <button class="category-btn">Категории <i class="fas fa-chevron-down"></i></button>
+        <div class="dropdown-content">
+          <a href="/" class="category-link">Все товары</a>
 
-    <div class="nav-links">
-      <a href="/" class="nav-link"><i class="fas fa-home"></i> Главная</a>
-      <a href="/cart" class="nav-link"><i class="fas fa-shopping-cart"></i> Корзина</a>
-      <a href="/profile" class="nav-link"><i class="fas fa-user"></i> Профиль</a>
-    </div>
-  </div>
-
-  <div class="category-nav">
-    <div class="category-dropdown">
-      <button class="category-btn">Категории <i class="fas fa-chevron-down"></i></button>
-      <div class="dropdown-content">
-        <a href="/" class="category-link">Все товары</a>
-
-        <div th:each="category : ${categories}">
-          <a th:href="@{/category/{id}(id=${category.id})}" class="category-link" th:text="${category.name}"></a>
-          <div class="subcategories">
-            <div th:each="subcategory : ${category.subcategories}">
-              <a th:href="@{/subcategory/{id}(id=${subcategory.id})}" class="subcategory-link" th:text="${subcategory.name}"></a>
+          <div th:each="category : ${categories}">
+            <a th:href="@{/category/{id}(id=${category.id})}" class="category-link" th:text="${category.name}"></a>
+            <div class="subcategories">
+              <div th:each="subcategory : ${category.subcategories}">
+                <a th:href="@{/subcategory/{id}(id=${subcategory.id})}" class="subcategory-link" th:text="${subcategory.name}"></a>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
-<main class="main-content">
+  <main class="main-content">
 
-  <div class="products-grid">
-    <div th:each="product : ${products}">
-      <div class="product-card">
-        <a th:href="@{/product/{id}(id=${product.id})}">
-          <div class="product-image-container">
-            <img th:src="${product.imageUrl}" th:alt="${product.name}" class="product-image">
-            <div class="product-badge">Новинка</div>
-          </div>
-          <div class="product-info">
-            <h3 class="product-title" th:text="${product.name}"></h3>
-            <p class="product-brand" th:text=" ${'Бренд: '+product.brand}"></p>
-            <p class="product-description" th:text="${product.description}"></p>
-            <div class="product-price-container">
-              <span class="product-price" th:text="${'$'+product.price}"></span>
-              <!--                                <span class="product-old-price" th:text="${'$'+product.price}"></span>-->
+    <div class="products-grid">
+      <div th:each="product : ${products}">
+        <div class="product-card">
+          <a th:href="@{/product/{id}(id=${product.id})}">
+            <div class="product-image-container">
+              <img th:src="${product.imageUrl}" th:alt="${product.name}" class="product-image">
+  <!--            <div class="product-badge">Новинка</div>-->
             </div>
-            <div class="product-stock" th:text="${'В наличии: '+product.stockQuantity + ' шт.'}"></div>
-          </div>
-        </a>
-        <form action="/cart/add" method="POST" class="add-to-cart-form">
-          <input type="hidden" name="product_id" value="1">
-          <button type="submit" class="add-to-cart-btn">В корзину</button>
-        </form>
+            <div class="product-info">
+              <h3 class="product-title" th:text="${product.name}"></h3>
+              <p class="product-brand" th:text=" ${'Бренд: '+product.brand}"></p>
+              <p class="product-description" th:text="${product.description}"></p>
+              <div class="product-price-container">
+                <span class="product-price" th:text="${'$'+product.price}"></span>
+                <!--                                <span class="product-old-price" th:text="${'$'+product.price}"></span>-->
+              </div>
+              <div class="product-stock" th:text="${'В наличии: '+product.stockQuantity + ' шт.'}"></div>
+            </div>
+          </a>
+          <form action="/cart/add" method="POST" class="add-to-cart-form">
+            <input type="hidden" name="product_id" value="1">
+            <button type="submit" class="add-to-cart-btn">В корзину</button>
+          </form>
+        </div>
       </div>
     </div>
+  </main>
 
+  <div class="pagination-container">
+    <a th:if="${page > 0}" th:href="@{/search(query=${query},page=${page - 1})}" class="pagination-button previous-page">
+      <span>&larr;</span>
+      Previous page
+    </a>
+    <a th:if="${page <= 0}" href="#" class="pagination-button previous-page disabled">
+      <span>&larr;</span>
+      Previous page
+    </a>
 
-
+    <a th:if="${page < allPages}" th:href="@{/search(query=${query},page=${page + 1})}" class="pagination-button next-page">
+      Next page
+      <span>&rarr;</span>
+    </a>
+    <a th:if="${page == allPages}" href="#" class="pagination-button next-page disabled">
+      Next page
+      <span>&rarr;</span>
+    </a>
   </div>
-</main>
 
-<footer class="footer">
-  <div class="footer-content">
-    <p>&copy; 2025 BaranoffShop. Все права защищены.</p>
-    <div class="social-links">
-      <a href="#"><i class="fab fa-facebook"></i></a>
-      <a href="#"><i class="fab fa-twitter"></i></a>
-      <a href="#"><i class="fab fa-instagram"></i></a>
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2025 BaranoffShop. Все права защищены.</p>
+      <div class="social-links">
+        <a href="#"><i class="fab fa-facebook"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+      </div>
     </div>
-  </div>
-</footer>
+  </footer>
 </body>
 </html>
