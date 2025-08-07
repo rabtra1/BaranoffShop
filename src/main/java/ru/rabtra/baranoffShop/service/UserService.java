@@ -32,6 +32,10 @@ public class UserService {
         return userRepository.findById(id);
     }
 
+    public Optional<User> findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
     @Transactional
     public void save(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -48,6 +52,11 @@ public class UserService {
     @Transactional
     public void delete(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void updateFirstNameAndLastName(Long id, String firstName, String lastName) {
+        userRepository.updateFirstAndLastNameByUserId(firstName, lastName, id);
     }
 
 }
