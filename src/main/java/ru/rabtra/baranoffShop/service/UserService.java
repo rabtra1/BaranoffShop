@@ -8,8 +8,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.rabtra.baranoffShop.model.User;
 import ru.rabtra.baranoffShop.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,8 +40,19 @@ public class UserService {
 
     @Transactional
     public void save(User user) {
+        String token = UUID.randomUUID().toString();
+        LocalDateTime expiryDate = LocalDateTime.now().plusDays(7);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("ROLE_USER");
+        user.setVerificationToken(token);
+        user.setTokenExpiration(expiryDate);
+        user.setEmailVerified(false);
+
+        System.out.println("Before save:");
+        System.out.println("Email Verified: " + user.getEmailVerified());
+        System.out.println("Verification Token: " + user.getVerificationToken());
+        System.out.println("Token Expiration: " + user.getTokenExpiration());
+
         userRepository.save(user);
     }
 
