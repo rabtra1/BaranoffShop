@@ -19,11 +19,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     @Autowired
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     public List<User> findAll() {
@@ -72,4 +74,24 @@ public class UserService {
         userRepository.updateFirstAndLastNameByUserId(firstName, lastName, id);
     }
 
+    public void sendVerificationLink(User user) {
+        emailService.sendVerificationMail(user.getEmail(), user.getVerificationToken());
+    }
+
+    @Transactional
+    public Boolean verifyUser(String token) {
+        var user =  userRepository.findByVerificationToken(token)
+                .orElseThrow();
+        System.out.println(user);
+        if (user.getTokenExpiration().isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        user.setEmailVerified(true);
+        user.setVerificationToken(null);
+        user.setTokenExpiration(null);
+        userRepository.save(user);
+
+        return true;
+    }
 }

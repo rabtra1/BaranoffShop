@@ -108,10 +108,18 @@
     color: var(--secondary-text);
 }
 
+.profile-form {
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
 .form-input {
     width: 100%;
     padding: 10px 15px;
     border-radius: 5px;
+    box-sizing: border-box; /* Добавь, чтобы padding не ломал ширину */
+    word-wrap: break-word; /* Чтобы длинные слова не выходили за пределы */
+    overflow-wrap: break-word;
     border: 1px solid var(--border-color);
     background-color: #333;
     color: var(--text-color);

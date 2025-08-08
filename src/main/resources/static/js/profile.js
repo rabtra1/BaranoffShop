@@ -36,10 +36,14 @@ function cancelEditing(button) {
 
 // Отправка письма для подтверждения email
 function sendVerificationEmail() {
-    fetch('/profile/send-verification', {
+    const token = document.querySelector('meta[name="_csrf"]').getAttribute('content');
+    const header = document.querySelector('meta[name="_csrf_header"]').getAttribute('content');
+
+    fetch('/profile/send-verification-email', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
+            [header]: token
         }
     })
         .then(response => {

@@ -17,3 +17,13 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  mail:
+    host: smtp.mail.ru
+    port: 465
+    username: rabtra@bk.ru
+    password: LHrx3nVey3tjaBwgXF6Q
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl.enable: true

@@ -13,6 +13,7 @@ import java.util.Optional;
 public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmail(String email);
+    Optional<User> findByVerificationToken(String token);
 
     @Modifying
     @Query(
@@ -23,5 +24,41 @@ public interface UserRepository extends JpaRepository<User, Long> {
 """
     )
     void updateFirstAndLastNameByUserId(@Param("first") String first,@Param("last") String last, @Param("userId") Long userId);
+
+    @Modifying
+    @Query(
+            """
+        UPDATE User SET email = :email
+        WHERE id = :userId
+"""
+    )
+    void updateEmail(@Param("email") String email, @Param("userId") Long userId);
+
+    @Modifying
+    @Query(
+            """
+        UPDATE User SET phone = :phone
+        WHERE id = :userId
+"""
+    )
+    void updatePhoneNumber(@Param("phone") String phone, @Param("userId") Long userId);
+
+    @Modifying
+    @Query(
+            """
+        UPDATE User SET address = :address
+        WHERE id = :userId
+"""
+    )
+    void updateAddress(@Param("address") String address, @Param("userId") Long userId);
+
+    @Modifying
+    @Query(
+            """
+        UPDATE User SET password = :newPassword
+        WHERE id = :userId
+"""
+    )
+    void updatePassword(@Param("newPassword") String newPassword, @Param("userId") Long userId);
 
 }

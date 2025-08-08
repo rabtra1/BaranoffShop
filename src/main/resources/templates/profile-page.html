@@ -7,6 +7,8 @@
     <link rel="stylesheet" th:href="@{/css/main.css}">
     <link rel="stylesheet" th:href="@{/css/profile.css}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
 </head>
 <body>
 <nav class="navbar">
@@ -114,21 +116,21 @@
                     <div class="form-group">
                         <label for="email">Email</label>
                         <div class="input-with-status">
-                            <input type="email" id="email" name="email" class="form-input" placeholder="Введите email" disabled>
-                            <span class="verified-status" style="display: none;">
+                            <input type="email" id="email" name="email" th:value="${user.email}" class="form-input" placeholder="Введите email" disabled>
+                            <span class="verified-status" th:if="${user.emailVerified}">
                                     <i class="fas fa-check-circle"></i> Подтвержден
                                 </span>
-                            <span class="unverified-status" style="display: none;">
+                            <span class="unverified-status" th:if="${!user.emailVerified}">
                                     <i class="fas fa-exclamation-circle"></i> Не подтвержден
                                 </span>
                         </div>
-                        <div class="verification-actions" style="display: none;">
+                        <div class="verification-actions" th:if="${!user.emailVerified}">
                             <button type="button" class="verify-btn" onclick="sendVerificationEmail()">
                                 <i class="fas fa-envelope"></i> Отправить подтверждение
                             </button>
                         </div>
                     </div>
-                    <div class="form-actions">
+                    <div class="form-actions" th:if="${user.emailVerified}">
                         <button type="button" class="edit-btn" onclick="enableEditing(this)">
                             <i class="fas fa-edit"></i> Редактировать
                         </button>

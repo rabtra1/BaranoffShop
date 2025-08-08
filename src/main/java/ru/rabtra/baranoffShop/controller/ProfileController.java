@@ -1,6 +1,9 @@
 package ru.rabtra.baranoffShop.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
@@ -60,6 +63,27 @@ public class ProfileController {
         userService.updateFirstNameAndLastName(user.getId(), firstName, lastName);
 
         return "redirect:/profile";
+    }
+
+    @PostMapping("/send-verification-email")
+    @ResponseBody
+    public ResponseEntity<String> sendVerification(
+            Principal principal
+    ) {
+        var user = getUser(principal);
+        userService.sendVerificationLink(user);
+        return ResponseEntity.ok("Verification link has been sent");
+    }
+
+    @GetMapping("/verify-email")
+    public String verifyEmail(@RequestParam("token") String token) {
+        boolean verified = userService.verifyUser(token);
+        if (verified) {
+            System.out.println(token);
+            return "redirect:/profile";
+        } else {
+            return "error/email-verification-failed";
+        }
     }
 
 }
