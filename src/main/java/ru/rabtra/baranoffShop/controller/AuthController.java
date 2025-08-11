@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.rabtra.baranoffShop.model.User;
 import ru.rabtra.baranoffShop.service.UserService;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Controller
 @RequestMapping( "/auth")
 public class AuthController {
@@ -33,6 +36,17 @@ public class AuthController {
 
     @PostMapping("/registration")
     public String processReg(@ModelAttribute("user") User user) {
+
+        var token = UUID.randomUUID().toString();
+        var expiryDate = LocalDateTime.now().plusDays(7);
+        user.setVerificationToken(token);
+        user.setTokenExpiration(expiryDate);
+        user.setEmailVerified(false);
+
+        System.out.println("Before registration: ");
+        System.out.println("Email Verified: " + user.getEmailVerified());
+        System.out.println("Verification Token: " + user.getVerificationToken());
+        System.out.println("Token Expiration: " + user.getTokenExpiration());
 
         userService.save(user);
         return "redirect:/auth/login";

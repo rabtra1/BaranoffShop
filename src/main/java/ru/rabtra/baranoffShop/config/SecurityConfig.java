@@ -38,7 +38,7 @@ public class SecurityConfig {
                         .loginProcessingUrl("/process_login")
                 )
                 .logout(logout -> logout
-                        .logoutUrl("/")
+                        .logoutUrl("/logout")
                         .logoutSuccessUrl("/auth/login")
                 )
                 .userDetailsService(customUserDetailsService);

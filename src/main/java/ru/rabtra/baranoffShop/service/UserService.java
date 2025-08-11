@@ -42,19 +42,8 @@ public class UserService {
 
     @Transactional
     public void save(User user) {
-        String token = UUID.randomUUID().toString();
-        LocalDateTime expiryDate = LocalDateTime.now().plusDays(7);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole("ROLE_USER");
-        user.setVerificationToken(token);
-        user.setTokenExpiration(expiryDate);
-        user.setEmailVerified(false);
-
-        System.out.println("Before save:");
-        System.out.println("Email Verified: " + user.getEmailVerified());
-        System.out.println("Verification Token: " + user.getVerificationToken());
-        System.out.println("Token Expiration: " + user.getTokenExpiration());
-
         userRepository.save(user);
     }
 
@@ -72,6 +61,11 @@ public class UserService {
     @Transactional
     public void updateFirstNameAndLastName(Long id, String firstName, String lastName) {
         userRepository.updateFirstAndLastNameByUserId(firstName, lastName, id);
+    }
+
+    @Transactional
+    public void updateEmail(Long userId, String email) {
+        userRepository.updateEmail(email, userId);
     }
 
     public void sendVerificationLink(User user) {
