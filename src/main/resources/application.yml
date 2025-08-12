@@ -27,3 +27,6 @@ spring:
         smtp:
           auth: true
           ssl.enable: true
+logging:
+  level:
+    root: info

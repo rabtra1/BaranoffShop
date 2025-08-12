@@ -7,10 +7,14 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.rabtra.baranoffShop.model.User;
 
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    List<User> findAllByEmailVerifiedFalseAndTokenExpirationBefore(LocalDateTime now);
 
     Optional<User> findByEmail(String email);
     Optional<User> findByVerificationToken(String token);
