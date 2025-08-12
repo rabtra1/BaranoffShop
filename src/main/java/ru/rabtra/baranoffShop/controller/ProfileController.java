@@ -1,5 +1,6 @@
 package ru.rabtra.baranoffShop.controller;
 
+import jakarta.persistence.PostRemove;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -8,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -31,13 +33,15 @@ public class ProfileController {
     private final CategoryService categoryService;
     private final OrderService orderService;
     private final CustomUserDetailsService  customUserDetailsService;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public ProfileController(UserService userService, CategoryService categoryService, OrderService orderService, CustomUserDetailsService customUserDetailsService) {
+    public ProfileController(UserService userService, CategoryService categoryService, OrderService orderService, CustomUserDetailsService customUserDetailsService, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.categoryService = categoryService;
         this.orderService = orderService;
         this.customUserDetailsService = customUserDetailsService;
+        this.passwordEncoder = passwordEncoder;
     }
 
     private User getUser(Principal p) {
@@ -88,12 +92,10 @@ public class ProfileController {
             user.setVerificationToken(token);
             user.setTokenExpiration(tokenExpiration);
             user.setEmail(email);
-            userService.save(user);
+            userService.update(user.getId(),user);
         } else {
             System.out.println("INFO: updateEmail some problem");
         }
-
-//        userService.updateEmail(user.getId(), email);
 
         var userDetails = (CustomUserDetails) customUserDetailsService.loadUserByUsername(user.getEmail());
         var newAuth = new UsernamePasswordAuthenticationToken(
@@ -105,6 +107,54 @@ public class ProfileController {
 
         return "redirect:/profile";
 
+    }
+
+    @PostMapping("/update-phone")
+    public String updatePhone(
+            @RequestParam("phoneNumber") String phoneNumber,
+            Principal principal
+    ) {
+
+        var user =  getUser(principal);
+        user.setPhone(phoneNumber);
+        userService.update(user.getId(),user);
+
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/update-address")
+    public String updateAddress(
+            @RequestParam("address") String address,
+            Principal principal
+    ) {
+
+        var user = getUser(principal);
+        user.setAddress(address);
+        userService.update(user.getId(),user);
+
+        return "redirect:/profile";
+    }
+
+    @PostMapping("/change-password")
+    public String changePassword(
+            @RequestParam("currentPassword") String currentPassword,
+            @RequestParam("newPassword") String newPassword,
+            @RequestParam("confirmPassword") String confirmPassword,
+            Principal principal
+    ) {
+        var user = getUser(principal);
+
+        boolean passwordsAreEquals = newPassword.equals(confirmPassword);
+        boolean oldPasswordMatch = passwordEncoder.matches(currentPassword, user.getPassword());
+
+        if (passwordsAreEquals && oldPasswordMatch) {
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userService.update(user.getId(), user);
+        } else {
+            System.out.println("some error");
+        }
+
+        return "redirect:/profile";
     }
 
     @PostMapping("/send-verification-email")

@@ -251,3 +251,44 @@ textarea.form-input {
         flex-grow: 1;
     }
 }
+
+/* Стили для выхода в профиле */
+.logout-section {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+}
+
+.logout-form {
+    display: inline-block;
+}
+
+.logout-btn {
+    background-color: transparent;
+    color: #ff6b6b;
+    border: 1px solid #ff6b6b;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logout-btn:hover {
+    background-color: rgba(255, 107, 107, 0.1);
+}
+
+.logout-btn i {
+    font-size: 16px;
+}
+
+@media (max-width: 768px) {
+    .logout-btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
