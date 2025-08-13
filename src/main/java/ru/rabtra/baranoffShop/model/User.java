@@ -1,6 +1,8 @@
 package ru.rabtra.baranoffShop.model;
 
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -17,21 +19,29 @@ public class User {
     private Long id;
 
     @Column(name = "first_name")
+    @NotBlank(message = "Имя не должно быть пустым")
+    @Size(min = 2, max = 50, message = "Имя должно состоять минимум из 2-х символов и максимум из 50-ти символов")
     private String firstName;
 
     @Column(name = "last_name")
+    @NotBlank(message = "Фамилия не должна быть пустым")
+    @Size(min = 2, max = 50, message = "Фамилия должна состоять минимум из 2-х символов и максимум из 50-ти символов")
     private String lastName;
 
     @Column
+    @NotBlank(message = "Пароль не должен быть пустым")
+    @Size(min = 8, max=100, message = "Пароль должен содержать минимум 8 символов и максимум 100 символов")
     private String password;
 
     @Column
+    @Email(message = "Вы ввели неверный email")
     private String email;
 
     @Column
     private String address;
 
     @Column(name = "phone_number")
+    @Pattern(regexp = "^((8|\\+7)[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{7,10}$", message = "Вы ввели неверный номер телефона")
     private String phone;
 
     @Column

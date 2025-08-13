@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: baranoffShop
+  datasource:
+    url: jdbc:postgresql://localhost:5432/baranoff_shop
+    username:
+    password:
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        show_sql: true
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+  mail:
+    host: smtp.mail.ru
+    port: 465
+    username:
+    password:
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl.enable: true
+logging:
+  level:
+    root: info

@@ -7,19 +7,22 @@ import java.math.BigDecimal;
 
 @Entity
 @Table(name = "order_items")
-@IdClass(OrderItemKey.class)
 @Data
 public class OrderItem {
 
-    @Id
-    @ManyToOne()
+    @EmbeddedId
+    private OrderItemKey id;
+
+    @ManyToOne
+    @MapsId("orderId")
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Id
-    @ManyToOne()
+    @ManyToOne
+    @MapsId("productId")
     @JoinColumn(name = "product_id")
     private Product product;
+
 
     @Column
     private int quantity;

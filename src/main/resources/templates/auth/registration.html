@@ -14,21 +14,25 @@
         <label for="firstName">
             <input class="input" type="text" required id="firstName" th:field="*{firstName}">
             <span>Firstname</span>
+            <span style="color: red" th:if="${#fields.hasErrors()}" th:errors="*{firstName}"></span>
         </label>
 
         <label for="lastName">
             <input class="input" type="text" required id="lastName" th:field="*{lastName}">
             <span>Lastname</span>
+            <span style="color: red" th:if="${#fields.hasErrors()}" th:errors="*{lastName}"></span>
         </label>
 
         <label for="email">
             <input class="input" type="email" required id="email" th:field="*{email}">
             <span>Email</span>
+            <span style="color: red" th:if="${#fields.hasErrors()}" th:errors="*{email}"></span>
         </label>
 
         <label for="password">
             <input class="input" type="password" required id="password" th:field="*{password}">
             <span>Password</span>
+            <span style="color: red" th:if="${#fields.hasErrors()}" th:errors="*{password}"></span>
         </label>
 
         <button class="submit" type="submit">Submit</button>

@@ -1,6 +1,7 @@
 package ru.rabtra.baranoffShop.controller;
 
 import jakarta.persistence.PostRemove;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.rabtra.baranoffShop.dto.NameUpdateDTO;
 import ru.rabtra.baranoffShop.model.User;
 import ru.rabtra.baranoffShop.security.CustomUserDetails;
 import ru.rabtra.baranoffShop.service.CategoryService;
@@ -61,18 +65,32 @@ public class ProfileController {
         model.addAttribute("categories", categoryService.findAll());
         model.addAttribute("countOrdersByUserId", orderService.countByUserId(user.getId()));
 
+        if (!model.containsAttribute("nameUpdate")) {
+            model.addAttribute("nameUpdate", new NameUpdateDTO());
+        }
+
         return "profile-page";
     }
 
     @PostMapping("/update-name")
     public String updateName(
-            @RequestParam("firstName") String firstName,
-            @RequestParam("lastName") String lastName,
-            Principal principal
+            @Valid @ModelAttribute("nameUpdate") NameUpdateDTO  nameUpdateDTO,
+            BindingResult bindingResult,
+            Principal principal,
+            RedirectAttributes redirectAttributes
     ) {
 
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.nameUpdate", bindingResult);
+            redirectAttributes.addFlashAttribute("nameUpdate", nameUpdateDTO);
+            return "redirect:/profile#info";
+        }
+
         var user = getUser(principal);
-        userService.updateFirstNameAndLastName(user.getId(), firstName, lastName);
+        user.setFirstName(nameUpdateDTO.getFirstName());
+        user.setLastName(nameUpdateDTO.getLastName());
+
+        userService.update(user.getId(), user);
 
         return "redirect:/profile";
     }
