@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.rabtra.baranoffShop.dto.*;
 import ru.rabtra.baranoffShop.model.User;
@@ -26,8 +27,14 @@ import ru.rabtra.baranoffShop.service.CustomUserDetailsService;
 import ru.rabtra.baranoffShop.service.OrderService;
 import ru.rabtra.baranoffShop.service.UserService;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -89,6 +96,35 @@ public class ProfileController {
         }
 
         return "profile-page";
+    }
+
+    @PostMapping("/avatar")
+    public String updateAvatar(
+            @RequestParam("avatar")MultipartFile file,
+            Principal principal
+    ) throws IOException {
+
+        if (file.isEmpty()) {
+            return "redirect:/profile?error=empty";
+        }
+
+        String extension = Objects.requireNonNull(file.getOriginalFilename())
+                .substring(file.getOriginalFilename().lastIndexOf("."));
+        String fileName = principal.getName() + "_" + System.currentTimeMillis() + extension;
+
+        Path uploadPath = Paths.get("uploads/avatars");
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        Files.copy(file.getInputStream(), uploadPath.resolve(fileName), StandardCopyOption.REPLACE_EXISTING);
+
+        var user = getUser(principal);
+        user.setAvatarUrl("/uploads/avatars/" + fileName);
+        userService.update(user.getId(), user);
+
+        return "redirect:/profile";
+
     }
 
     @PostMapping("/update-name")

@@ -64,7 +64,8 @@
     <div class="profile-container">
         <div class="profile-sidebar">
             <div class="avatar-container">
-                <img th:src="${user.avatarUrl}" alt="Аватар" class="profile-avatar" id="avatarImage">
+                <img th:src="${user.avatarUrl != null ? user.avatarUrl : '/images/default-avatar.png'}"
+                     alt="Аватар" class="profile-avatar" id="avatarImage">
                 <form th:action="@{/profile/avatar}" th:method="POST" enctype="multipart/form-data" class="avatar-form">
                     <input type="file" name="avatar" id="avatarInput" accept="image/*" style="display: none;">
                     <button type="button" class="change-avatar-btn" onclick="document.getElementById('avatarInput').click()">
