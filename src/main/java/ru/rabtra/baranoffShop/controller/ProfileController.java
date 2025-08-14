@@ -2,6 +2,8 @@ package ru.rabtra.baranoffShop.controller;
 
 import jakarta.persistence.PostRemove;
 import jakarta.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -16,7 +18,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import ru.rabtra.baranoffShop.dto.NameUpdateDTO;
+import ru.rabtra.baranoffShop.dto.*;
 import ru.rabtra.baranoffShop.model.User;
 import ru.rabtra.baranoffShop.security.CustomUserDetails;
 import ru.rabtra.baranoffShop.service.CategoryService;
@@ -38,6 +40,7 @@ public class ProfileController {
     private final OrderService orderService;
     private final CustomUserDetailsService  customUserDetailsService;
     private final PasswordEncoder passwordEncoder;
+    private final Logger log = LoggerFactory.getLogger(ProfileController.class);
 
     @Autowired
     public ProfileController(UserService userService, CategoryService categoryService, OrderService orderService, CustomUserDetailsService customUserDetailsService, PasswordEncoder passwordEncoder) {
@@ -69,6 +72,22 @@ public class ProfileController {
             model.addAttribute("nameUpdate", new NameUpdateDTO());
         }
 
+        if (!model.containsAttribute("emailUpdate")) {
+            model.addAttribute("emailUpdate", new EmailUpdateDTO());
+        }
+
+        if (!model.containsAttribute("phoneUpdate")) {
+            model.addAttribute("phoneUpdate", new PhoneUpdateDTO());
+        }
+
+        if (!model.containsAttribute("addressUpdate")) {
+            model.addAttribute("addressUpdate", new AddressUpdateDTO());
+        }
+
+        if (!model.containsAttribute("passwordUpdate")) {
+            model.addAttribute("passwordUpdate", new PasswordUpdateDTO());
+        }
+
         return "profile-page";
     }
 
@@ -97,9 +116,17 @@ public class ProfileController {
 
     @PostMapping("/update-email")
     public String updateEmail(
-            @RequestParam("email") String email,
-            Principal principal
+            @Valid @ModelAttribute("emailUpdate") EmailUpdateDTO emailUpdateDTO,
+            BindingResult bindingResult,
+            Principal principal,
+            RedirectAttributes redirectAttributes
     ) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.emailUpdate", bindingResult);
+            redirectAttributes.addFlashAttribute("emailUpdate", emailUpdateDTO);
+            return "redirect:/profile#info";
+        }
 
         var user = getUser(principal);
 
@@ -109,7 +136,7 @@ public class ProfileController {
             user.setEmailVerified(false);
             user.setVerificationToken(token);
             user.setTokenExpiration(tokenExpiration);
-            user.setEmail(email);
+            user.setEmail(emailUpdateDTO.getEmail());
             userService.update(user.getId(),user);
         } else {
             System.out.println("INFO: updateEmail some problem");
@@ -129,12 +156,20 @@ public class ProfileController {
 
     @PostMapping("/update-phone")
     public String updatePhone(
-            @RequestParam("phoneNumber") String phoneNumber,
-            Principal principal
+            @Valid @ModelAttribute("phoneUpdate") PhoneUpdateDTO phoneUpdateDTO,
+            BindingResult bindingResult,
+            Principal principal,
+            RedirectAttributes redirectAttributes
     ) {
 
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.phoneUpdate", bindingResult);
+            redirectAttributes.addFlashAttribute("phoneUpdate", phoneUpdateDTO);
+            return "redirect:/profile#info";
+        }
+
         var user =  getUser(principal);
-        user.setPhone(phoneNumber);
+        user.setPhone(phoneUpdateDTO.getPhone());
         userService.update(user.getId(),user);
 
         return "redirect:/profile";
@@ -142,12 +177,20 @@ public class ProfileController {
 
     @PostMapping("/update-address")
     public String updateAddress(
-            @RequestParam("address") String address,
-            Principal principal
+            @Valid @ModelAttribute("addressUpdate") AddressUpdateDTO addressUpdateDTO,
+            BindingResult bindingResult,
+            Principal principal,
+            RedirectAttributes redirectAttributes
     ) {
 
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.addressUpdate", bindingResult);
+            redirectAttributes.addFlashAttribute("addressUpdate", addressUpdateDTO);
+            return "redirect:/profile#info";
+        }
+
         var user = getUser(principal);
-        user.setAddress(address);
+        user.setAddress(addressUpdateDTO.getAddress());
         userService.update(user.getId(),user);
 
         return "redirect:/profile";
@@ -155,12 +198,23 @@ public class ProfileController {
 
     @PostMapping("/change-password")
     public String changePassword(
-            @RequestParam("currentPassword") String currentPassword,
-            @RequestParam("newPassword") String newPassword,
-            @RequestParam("confirmPassword") String confirmPassword,
-            Principal principal
+            @Valid @ModelAttribute("passwordUpdate") PasswordUpdateDTO passwordUpdateDTO,
+            BindingResult bindingResult,
+            Principal principal,
+            RedirectAttributes redirectAttributes
     ) {
+
+        if (bindingResult.hasErrors()) {
+            redirectAttributes.addFlashAttribute("org.springframework.validation.BindingResult.passwordUpdate", bindingResult);
+            redirectAttributes.addFlashAttribute("passwordUpdate", passwordUpdateDTO);
+            return "redirect:/profile";
+        }
+
         var user = getUser(principal);
+
+        String newPassword = passwordUpdateDTO.getNewPassword();
+        String confirmPassword = passwordUpdateDTO.getConfirmNewPassword();
+        String currentPassword = passwordUpdateDTO.getCurrentPassword();
 
         boolean passwordsAreEquals = newPassword.equals(confirmPassword);
         boolean oldPasswordMatch = passwordEncoder.matches(currentPassword, user.getPassword());
@@ -168,8 +222,6 @@ public class ProfileController {
         if (passwordsAreEquals && oldPasswordMatch) {
             user.setPassword(passwordEncoder.encode(newPassword));
             userService.update(user.getId(), user);
-        } else {
-            System.out.println("some error");
         }
 
         return "redirect:/profile";
